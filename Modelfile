@@ -1,0 +1,2 @@
+FROM gemma4:12b-mlx
+PARAMETER num_ctx 64000

@@ -1,0 +1,221 @@
+# My real Hermes config, copied from ~/.hermes/config.yaml with comment lines removed.
+# The API key is read from ~/.hermes/.env, which is not in this repo.
+_config_version: 50
+database:
+  journal_mode: "wal"  # Supported values: "wal", "delete"
+runtime:
+  nofile_soft_limit: 4096
+attachments:
+  storage: "hermes-home"
+plugins:
+  clone_timeout_seconds: 300
+model:
+  default: "gemma4:12b-mlx"
+  provider: "custom"
+  base_url: "http://host.docker.internal:11434/v1"
+  api_key: ${HERMES_CUSTOM_HOST_DOCKER_INTERNAL_11434_API_KEY}
+kanban:
+  review_dispatch: true
+cron:
+  catch_up_missed: true  # False skips past-grace recurring misses after planned downtime.
+terminal:
+  backend: "local"
+  cwd: "."  # For local backend: "." = current directory. Ignored for remote backends unless a backend documents otherwise.
+  timeout: 180
+  home_mode: "auto"
+  docker_mount_cwd_to_workspace: false  # SECURITY: off by default. Opt in to mount the launch cwd into Docker /workspace.
+  lifetime_seconds: 300
+  container_cpu: 1              # CPU cores
+  container_memory: 5120        # Memory in MB (5120 = 5GB)
+  container_disk: 51200         # Disk in MB (51200 = 50GB)
+  container_persistent: true    # Persist filesystem across sessions (false = ephemeral)
+browser:
+  inactivity_timeout: 120
+  extension_control:
+    enabled: false
+  cloud_provider: local
+tool_loop_guardrails:
+  warnings_enabled: true
+  hard_stop_enabled: false
+  non_interactive_hard_stop_enabled: true
+  warn_after:
+    exact_failure: 2
+    same_tool_failure: 3
+    idempotent_no_progress: 2
+  hard_stop_after:
+    exact_failure: 5
+    same_tool_failure: 8
+    idempotent_no_progress: 5
+compression:
+  enabled: true
+  checkpoint_required: false
+  progress_notices: false
+  threshold: 0.50
+  codex_gpt55_autoraise: true
+  target_ratio: 0.20
+  protect_last_n: 20
+  min_tail_user_messages: 1
+  max_attempts: 3
+  codex_app_server_auto: native
+  codex_responses_native: false
+  codex_responses_compact_threshold:
+  protect_first_n: 3
+  idle_compact_after_seconds: 0
+  hygiene_max_turn_hold_seconds: 10
+  proactive_prune_tokens: 0
+  proactive_prune_min_result_chars: 8000
+  proactive_prune_min_reclaim_tokens: 4096
+prompt_caching:
+  cache_ttl: "5m" # use "1h" for long sessions with pauses between turns
+memory:
+  memory_enabled: true
+  user_profile_enabled: true
+  prefetch_spill_enabled: false
+  memory_char_limit: 2200   # ~800 tokens
+  user_char_limit: 1375     # ~500 tokens
+  nudge_interval: 10        # Nudge every 10 user turns (0 = disabled)
+max_concurrent_sessions:
+group_sessions_per_user: true
+streaming:
+  enabled: false
+skills:
+  creation_nudge_interval: 15
+agent:
+  max_turns: 150
+  verbose: false
+  reasoning_effort: "xhigh"
+  service_tier: ""
+  fast_auto_seconds: 60
+  personalities: {}
+gateway:
+  signal_interrupt_grace_timeout: 1
+  delivery_ledger: true
+  platform_connect_timeout: 30
+  loop_watchdog: true
+  loop_watchdog_probe_interval_s: 30.0
+  loop_watchdog_probe_timeout_s: 10.0
+  loop_watchdog_max_strikes: 3
+  allow_all_users: false
+  bot_loop_guard:
+    enabled: true
+    max_events: 20
+    window_seconds: 300
+    cooldown_seconds: 600
+  startup_watchdog: true
+  startup_watchdog_timeout_seconds: 300
+  write_sessions_json: true
+  multiplex_profiles: true
+  auto_multiplex_migration: true
+  profile_routes: []
+  scale_to_zero:
+    idle_timeout_minutes: 2
+  restart_loop_guard:
+    max_restarts: 3
+    window_seconds: 60
+    max_gap_seconds: 300
+  respawn_storm:
+    max_starts: 5
+    window_seconds: 120
+  message_timestamps:
+    enabled: false
+  max_inbound_media_bytes: 134217728
+  trust_env: true
+  strict: false
+  media_delivery_allow_dirs: []
+  trust_recent_files: true
+  trust_recent_files_seconds: 600
+  api_server:
+    max_concurrent_runs: 10
+    history_tool_output_max_chars: 0
+platform_toolsets:
+  cli: [browser, code_execution, file, terminal, todo]
+  telegram: [hermes-telegram]
+  discord: [hermes-discord]
+  whatsapp: [hermes-whatsapp]
+  slack: [hermes-slack]
+  signal: [hermes-signal]
+  qqbot: [hermes-qqbot]
+  yuanbao: [hermes-yuanbao]
+  teams: [hermes-teams]
+  google_chat: [hermes-google_chat]
+stt:
+  enabled: true
+  local:
+    model: "base"              # tiny | base | small | medium | large-v3 | turbo
+  language: "en"               # GLOBAL language hint for every STT provider (per-provider language wins). Set "" for auto-detect.
+  openai:
+    model: "whisper-1"         # whisper-1 | gpt-4o-mini-transcribe | gpt-4o-transcribe | gpt-transcribe
+    language: ""               # auto-detect; set to "en", "es", "fr", etc. to force
+    timeout: 60                # request timeout in seconds; increase for self-hosted model cold starts
+    max_retries: 1             # OpenAI SDK transport retries; set 0 to disable
+code_execution:
+  timeout: 300         # Max seconds per script before kill (default: 300 = 5 min)
+  max_tool_calls: 50   # Max RPC tool calls per execution (default: 50)
+delegation:
+  max_iterations: 250                         # Max tool-calling turns per child (default: 250)
+display:
+  compact: false
+  cleanup_progress: false
+  suppress_warning_notifications: false
+  busy_input_mode: interrupt
+  background_process_notifications: concise
+  bell_on_complete: false
+  bell_on_prompt: false
+  streaming: true
+  skin: default
+telemetry:
+  shared_metrics:
+    enabled: false
+    send: false
+    offer_version: 2
+auth:
+  adopt_external_logins: true
+  codex_login_flow: device_code
+updates:
+  check: true
+  pre_update_backup: false
+  backup_keep: 5
+  non_interactive_local_changes: "stash"
+custom_providers:
+  - name: Gemma4:12b
+    base_url: http://host.docker.internal:11434/v1
+    key_env: HERMES_CUSTOM_HOST_DOCKER_INTERNAL_11434_API_KEY
+    model: gemma4:12b-mlx
+    models:
+      gemma4-12b-64k:latest: {}
+      gemma4:12b-mlx: {}
+      dolphin-mixtral:8x7b: {}
+      gemma4:31b-mlx: {}
+      qwen2.5-coder:1.5b-base: {}
+    models_discovered: true
+known_plugin_toolsets:
+  cli:
+    - a2a
+known_builtin_toolsets:
+  cli:
+    - browser
+    - clarify
+    - code_execution
+    - computer_use
+    - connections
+    - context_engine
+    - cronjob
+    - delegation
+    - discord
+    - discord_admin
+    - file
+    - image_gen
+    - kanban
+    - memory
+    - session_search
+    - skills
+    - stt
+    - terminal
+    - todo
+    - tts
+    - video
+    - video_gen
+    - vision
+    - web
+    - x_search
+    - yuanbao

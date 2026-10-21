@@ -1,0 +1,8 @@
+services:
+  hermes:
+    image: nousresearch/hermes-agent:latest
+    stdin_open: true
+    tty: true
+    shm_size: "1g"
+    volumes:
+      - ~/.hermes:/opt/data

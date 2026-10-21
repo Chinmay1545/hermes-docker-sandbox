@@ -1,0 +1,4 @@
+.env
+.hermes/
+*.db
+.DS_Store
